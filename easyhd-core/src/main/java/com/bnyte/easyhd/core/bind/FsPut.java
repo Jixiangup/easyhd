@@ -20,6 +20,8 @@ public @interface FsPut {
 
     boolean overwrite() default true;
 
-    boolean remove() default true;
+    boolean remove() default false;
+
+    String user();
 
 }

@@ -1,7 +1,6 @@
 package com.bnyte.easyhd.autoconfigure.proxy;
 
-import com.bnyte.easyhd.core.bind.FsPut;
-import com.bnyte.easyhd.core.build.HdfsBuild;
+import com.bnyte.easyhd.core.handle.EasyHdHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +34,9 @@ public class EasyHdProxyHandler<T> implements InvocationHandler {
         if (Object.class.equals(method.getDeclaringClass())) {
             return method.invoke(this, args);
         } else {
-            FsPut fsPut = method.getAnnotation(FsPut.class);
-            HdfsBuild.build(fsPut);
+            EasyHdHandler hdHandler = EasyHdHandler.loader(method, args);
+            hdHandler.build();
+            hdHandler.execute();
             return "finished";
         }
     }

@@ -10,7 +10,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface FsPut {
+public @interface FsDownload {
+
+    // 删除远程文件 源文件路径 下载路径 本地文件校验
 
     /**
      * hdfs name node Api 地址
@@ -20,34 +22,34 @@ public @interface FsPut {
     String address() default "localhost:8020";
 
     /**
-     * 需要上传的本地文件地址
-     * @return 需要上传的本地文件绝对路径
+     * 操作用户 默认root
+     * @return 操作用户 默认root
+     */
+    String user() default "root";
+
+    /**
+     * 下载的文件需要保存到的本地文件地址
+     * @return 下载的文件需要保存到的本地文件地址默认下载到本地文件的/${user.home}/easyhd
      */
     String local() default "";
 
     /**
-     * 需要上传的远程文件地址, 默认/easyhd/${filename}
+     * 远程文件地址, 默认
      * @return 需要上传的远程文件地址
      */
-    String remote() default "";
+    String remote();
 
     /**
-     * 是否覆盖远程文件
+     * 是否开启文件校验
      *
-     * @return 是否覆盖远程文件 默认覆盖
+     * @return 是否开启文件校验 默认不开启
      */
-    boolean overwrite() default true;
+    boolean useRawLocalFileSystem() default true;
 
     /**
      * 是否删除本地文件 默认不删除
      * @return 是否删除本地文件 默认不删除
      */
     boolean remove() default false;
-
-    /**
-     * 操作用户 默认root
-     * @return 操作用户 默认root
-     */
-    String user() default "root";
 
 }

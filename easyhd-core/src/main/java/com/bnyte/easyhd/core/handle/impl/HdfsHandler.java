@@ -1,13 +1,16 @@
 package com.bnyte.easyhd.core.handle.impl;
 
+import com.bnyte.easyhd.core.bind.FsDelete;
+import com.bnyte.easyhd.core.bind.FsDownload;
+import com.bnyte.easyhd.core.bind.FsMkdir;
 import com.bnyte.easyhd.core.bind.FsPut;
 import com.bnyte.easyhd.core.client.HdfsClient;
 import com.bnyte.easyhd.core.exception.ClientNotFoundException;
 import com.bnyte.easyhd.core.exception.OperateMethodException;
+import com.bnyte.easyhd.core.execute.HdfsExecute;
 import com.bnyte.easyhd.core.handle.EasyHdHandler;
 import com.bnyte.easyhd.core.render.HdfsRender;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +33,10 @@ public class HdfsHandler implements EasyHdHandler {
 
     static {
         hdfs = Stream.of(
-                    FsPut.class
+                    FsPut.class,
+                    FsDelete.class,
+                    FsDownload.class,
+                    FsMkdir.class
                 )
                 .collect(Collectors.toList());
     }
@@ -54,17 +60,20 @@ public class HdfsHandler implements EasyHdHandler {
         FileSystem fileSystem = HdfsRender.build(this.getHdfsClient());
         try {
             switch (this.getHdfsClient().getMethod()) {
-                case GET:
-                    executeGet(fileSystem);
+                case DOWNLOAD:
+                    HdfsExecute.executeDownload(fileSystem, this.getHdfsClient());
+                    break;
+                case MKDIR:
+                    HdfsExecute.executeMkdir(fileSystem, this.getHdfsClient());
                     break;
                 case PUT:
-                    executePut(fileSystem);
+                    HdfsExecute.executePut(fileSystem, this.getHdfsClient());
                     break;
                 case MOVE:
-                    executeMove(fileSystem);
+                    HdfsExecute.executeMove(fileSystem, this.getHdfsClient());
                     break;
                 case DELETE:
-                    executeDelete(fileSystem);
+                    HdfsExecute.executeDelete(fileSystem, this.getHdfsClient());
                     break;
                 default:throw new OperateMethodException("HDFS 客户端操作方式未找到");
             }
@@ -81,32 +90,20 @@ public class HdfsHandler implements EasyHdHandler {
         }
     }
 
-    private void executeDelete(FileSystem fileSystem) {
-
-    }
-
-    private void executeMove(FileSystem fileSystem) {
-    }
-
-    private void executePut(FileSystem fileSystem) throws IOException {
-        HdfsClient hdfsClient = this.getHdfsClient();
-        Path localPath = new Path(hdfsClient.getLocal());
-        Path remotePath = new Path(hdfsClient.getRemote());
-        fileSystem.copyFromLocalFile(hdfsClient.getRemove(), hdfsClient.getOverwrite(), localPath, remotePath);
-    }
-
-    private void executeGet(FileSystem fileSystem) {
-
-    }
-
     private HdfsClient renderHdfsClient() {
         FsPut fsPut = getMethod().getAnnotation(FsPut.class);
-        if (null != fsPut) return renderPut(fsPut);
-        throw new ClientNotFoundException();
-    }
+        if (Objects.nonNull(fsPut)) return HdfsRender.renderPut(fsPut, this);
 
-    private HdfsClient renderPut(FsPut fsPut) {
-        return HdfsClient.build(fsPut, args, getMethod());
+        FsMkdir fsMkdir = getMethod().getAnnotation(FsMkdir.class);
+        if (Objects.nonNull(fsMkdir)) return HdfsRender.renderMkdir(fsMkdir, this);
+
+        FsDelete fsDelete = getMethod().getAnnotation(FsDelete.class);
+        if (Objects.nonNull(fsDelete)) return HdfsRender.renderDelete(fsDelete, this);
+
+        FsDownload fsDownload = getMethod().getAnnotation(FsDownload.class);
+        if (Objects.nonNull(fsDownload)) return HdfsRender.renderDownload(fsDownload, this);
+
+        throw new ClientNotFoundException();
     }
 
     public HdfsClient getHdfsClient() {

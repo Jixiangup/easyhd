@@ -8,7 +8,8 @@ public enum EHdfsMethod {
     PUT,
     MOVE,
     DELETE,
-    GET,
+    DOWNLOAD,
+    MKDIR,
     ;
 
 }

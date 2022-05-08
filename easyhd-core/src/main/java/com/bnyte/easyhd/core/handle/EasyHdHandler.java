@@ -13,8 +13,14 @@ import java.lang.reflect.Method;
  */
 public interface EasyHdHandler {
 
+    /**
+     * 构建器
+     */
     void build();
 
+    /**
+     * 执行器
+     */
     void execute();
 
     static EasyHdHandler loader(Method method, Object[] args) {
@@ -26,8 +32,6 @@ public interface EasyHdHandler {
         }
         throw new ClientNotFoundException();
     }
-
-
 
 
 }

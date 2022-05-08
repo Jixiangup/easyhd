@@ -1,5 +1,8 @@
 package com.bnyte.easyhd.core.client;
 
+import com.bnyte.easyhd.core.bind.FsDelete;
+import com.bnyte.easyhd.core.bind.FsDownload;
+import com.bnyte.easyhd.core.bind.FsMkdir;
 import com.bnyte.easyhd.core.bind.FsPut;
 import com.bnyte.easyhd.core.constant.SystemConstant;
 import com.bnyte.easyhd.core.enums.EHdfsMethod;
@@ -69,6 +72,21 @@ public class HdfsClient {
      */
     private List<Object> args;
 
+    /**
+     * 文件夹路径
+     */
+    private String folder;
+
+    /**
+     * 是否递归
+     */
+    private Boolean recursive;
+
+    /**
+     * 是否开启本地文件校验
+     */
+    private Boolean useRawLocalFileSystem;
+
     public HdfsClient() {
     }
 
@@ -76,23 +94,73 @@ public class HdfsClient {
         if (annotation instanceof FsPut) {
             return buildFsPutClient((FsPut) annotation, args, method);
         }
+
+        if (annotation instanceof FsMkdir) {
+            return buildFsMkdirClient((FsMkdir) annotation, args, method);
+        }
+
+        if (annotation instanceof FsDelete) {
+            return buildFsDeleteClient((FsDelete) annotation, args, method);
+        }
+
+        if (annotation instanceof FsDownload) {
+            return buildFsDownloadClient((FsDownload) annotation, args, method);
+        }
         throw new ClientNotFoundException();
+    }
+
+    private static HdfsClient buildFsDownloadClient(FsDownload annotation, List<Object> args, Method method) {
+        HdfsClient hdfsClient = new HdfsClient();
+        hdfsClient.setMethod(EHdfsMethod.DOWNLOAD);
+        hdfsClient.initializeExecutionData(args, method);
+        hdfsClient.setAddress(annotation.address());
+        hdfsClient.setUser(annotation.user());
+        hdfsClient.setUseRawLocalFileSystem(annotation.useRawLocalFileSystem());
+        hdfsClient.setLocal(annotation.local());
+        hdfsClient.setRemote(annotation.remote());
+        hdfsClient.setRemove(annotation.remove());
+        return hdfsClient;
+    }
+
+    private static HdfsClient buildFsDeleteClient(FsDelete annotation, List<Object> args, Method method) {
+        HdfsClient hdfsClient = new HdfsClient();
+        hdfsClient.setMethod(EHdfsMethod.DELETE);
+        hdfsClient.initializeExecutionData(args, method);
+        hdfsClient.setAddress(annotation.address());
+        hdfsClient.setUser(annotation.user());
+        hdfsClient.setFolder(annotation.folder());
+        hdfsClient.setRecursive(annotation.recursive());
+        return hdfsClient;
+    }
+
+    private static HdfsClient buildFsMkdirClient(FsMkdir annotation, List<Object> args, Method method) {
+        HdfsClient hdfsClient = new HdfsClient();
+        hdfsClient.setMethod(EHdfsMethod.MKDIR);
+        hdfsClient.initializeExecutionData(args, method);
+        hdfsClient.setAddress(annotation.address());
+        hdfsClient.setUser(annotation.user());
+        hdfsClient.setFolder(annotation.folder());
+        return hdfsClient;
     }
 
     private static HdfsClient buildFsPutClient(FsPut annotation, List<Object> args, Method method) {
         HdfsClient hdfsClient = new HdfsClient();
-        hdfsClient.setInvokeMethod(method);
-        hdfsClient.setArgs(args);
+        hdfsClient.setMethod(EHdfsMethod.PUT);
+        hdfsClient.initializeExecutionData(args, method);
         hdfsClient.setAddress(annotation.address());
         hdfsClient.setLocal(annotation.local());
         hdfsClient.setOverwrite(annotation.overwrite());
         hdfsClient.setRemote(annotation.remote());
         hdfsClient.setRemove(annotation.remove());
         hdfsClient.setUser(annotation.user());
-        hdfsClient.setMethod(EHdfsMethod.PUT);
         return hdfsClient;
     }
 
+
+    public void initializeExecutionData(List<Object> args, Method method) {
+        this.setInvokeMethod(method);
+        this.setArgs(args);
+    }
 
     public EHdfsMethod getMethod() {
         return method;
@@ -185,6 +253,35 @@ public class HdfsClient {
 
     public void setArgs(List<Object> args) {
         this.args = args;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        if (!CollectionUtils.isEmpty(this.args)) {
+            Properties render = PropertiesUtils.render(this.args, this.invokeMethod);
+            this.folder = SystemConstant.placeholderHelper.replacePlaceholders(folder, render);
+            return;
+        }
+        this.folder = folder;
+    }
+
+    public Boolean getRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(Boolean recursive) {
+        this.recursive = recursive;
+    }
+
+    public Boolean getUseRawLocalFileSystem() {
+        return useRawLocalFileSystem;
+    }
+
+    public void setUseRawLocalFileSystem(Boolean useRawLocalFileSystem) {
+        this.useRawLocalFileSystem = useRawLocalFileSystem;
     }
 
     @Override

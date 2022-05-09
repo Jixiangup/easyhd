@@ -36,8 +36,8 @@ public class EasyHdProxyHandler<T> implements InvocationHandler {
         } else {
             EasyHdHandler hdHandler = EasyHdHandler.loader(method, args);
             hdHandler.build();
-            hdHandler.execute();
-            return "finished";
+            Object execute = hdHandler.execute();
+            return hdHandler.postResponseProcessing(execute);
         }
     }
 

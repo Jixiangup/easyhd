@@ -21,7 +21,14 @@ public interface EasyHdHandler {
     /**
      * 执行器
      */
-    void execute();
+    Object execute();
+
+    /**
+     * 执行完毕之后的后置响应结果处理，通过在接口指定的返回结果类型做转换
+     * @param object 执行器执行结果
+     * @return 返回响应处理结果
+     */
+    Object postResponseProcessing(Object object);
 
     static EasyHdHandler loader(Method method, Object[] args) {
         Annotation[] annotations = method.getAnnotations();

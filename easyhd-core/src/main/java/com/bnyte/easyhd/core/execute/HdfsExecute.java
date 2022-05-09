@@ -1,6 +1,7 @@
 package com.bnyte.easyhd.core.execute;
 
 import com.bnyte.easyhd.core.client.HdfsClient;
+import com.bnyte.easyhd.core.pojo.EasyHdResult;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -14,14 +15,18 @@ public class HdfsExecute {
 
     /**
      * 执行文件下载
+     *
      * @param fileSystem 文件系统对象
      * @param hdfsClient hdfs客户端对象
+     * @return 执行结果
+     *
      * @throws IOException 失败异常
      */
-    public static void executeDownload(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
+    public static Boolean executeDownload(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
         Path remoteFilepath = new Path(hdfsClient.getRemote());
         Path localFolderPath = new Path(hdfsClient.getLocal());
         fileSystem.copyToLocalFile(hdfsClient.getRemove(), remoteFilepath, localFolderPath, hdfsClient.getUseRawLocalFileSystem());
+        return true;
     }
 
     /**
@@ -31,7 +36,8 @@ public class HdfsExecute {
      */
     public static void executeMkdir(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
         Path path = new Path(hdfsClient.getFolder());
-        fileSystem.mkdirs(path);
+        boolean mkdirs = fileSystem.mkdirs(path);
+
     }
 
     public static void executeDelete(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {

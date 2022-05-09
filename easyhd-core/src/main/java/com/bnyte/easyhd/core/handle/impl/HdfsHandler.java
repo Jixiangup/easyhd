@@ -9,6 +9,7 @@ import com.bnyte.easyhd.core.exception.ClientNotFoundException;
 import com.bnyte.easyhd.core.exception.OperateMethodException;
 import com.bnyte.easyhd.core.execute.HdfsExecute;
 import com.bnyte.easyhd.core.handle.EasyHdHandler;
+import com.bnyte.easyhd.core.pojo.EasyHdResult;
 import com.bnyte.easyhd.core.render.HdfsRender;
 import org.apache.hadoop.fs.FileSystem;
 import org.slf4j.Logger;
@@ -56,13 +57,12 @@ public class HdfsHandler implements EasyHdHandler {
     }
 
     @Override
-    public void execute() {
+    public Object execute() {
         FileSystem fileSystem = HdfsRender.build(this.getHdfsClient());
         try {
             switch (this.getHdfsClient().getMethod()) {
                 case DOWNLOAD:
-                    HdfsExecute.executeDownload(fileSystem, this.getHdfsClient());
-                    break;
+                    return HdfsExecute.executeDownload(fileSystem, this.getHdfsClient());
                 case MKDIR:
                     HdfsExecute.executeMkdir(fileSystem, this.getHdfsClient());
                     break;
@@ -88,6 +88,17 @@ public class HdfsHandler implements EasyHdHandler {
                 }
             }
         }
+        return null;
+    }
+
+    @Override
+    public Object postResponseProcessing(Object object) {
+        if (Objects.isNull(object)) return null;
+        // 默认空值响应
+        if (object instanceof Boolean) {
+            return EasyHdResult.execute((Boolean) object);
+        }
+        return null;
     }
 
     private HdfsClient renderHdfsClient() {

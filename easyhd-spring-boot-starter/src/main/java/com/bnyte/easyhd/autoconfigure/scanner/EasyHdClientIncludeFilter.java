@@ -16,13 +16,8 @@ public class EasyHdClientIncludeFilter implements TypeFilter {
      */
     @Override
     public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {
-        /*String className = metadataReader.getClassMetadata().getClassName();
-        Class<?> clazz = null;
-        try {
-            clazz = Class.forName(className);
-        } catch (ClassNotFoundException ignored) { }
-        return clazz != null;*/
-        return true;
+        // FIXME: 2022/5/10 包扫描资源过滤条件没有完善
+        return true; // 这个位置不该写true 后续有时间在修复吧 现在就这样
     }
 
 

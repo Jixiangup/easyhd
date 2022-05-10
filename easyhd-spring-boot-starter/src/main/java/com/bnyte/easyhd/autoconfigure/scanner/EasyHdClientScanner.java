@@ -34,7 +34,6 @@ public class EasyHdClientScanner extends ClassPathBeanDefinitionScanner {
     public void registerFilters() {
         // 判断用户是否配置需要全局扫描
         addIncludeFilter(new EasyHdClientIncludeFilter());
-//        addIncludeFilter(new AnnotationTypeFilter(RepostClient.class));
 
         addExcludeFilter(new EasyHdClientExcludeFilter());
     }
@@ -57,7 +56,7 @@ public class EasyHdClientScanner extends ClassPathBeanDefinitionScanner {
         }
 
         if (beanDefinitions.isEmpty()) {
-            logger.warn("[Repost] No Forest client is found in package '" + Arrays.toString(basePackages) + "'.");
+            logger.warn("[EasyHd] No EasyHd client is found in package '" + Arrays.toString(basePackages) + "'.");
         }
         processBeanDefinitions(beanDefinitions);
         return beanDefinitions;
@@ -70,13 +69,13 @@ public class EasyHdClientScanner extends ClassPathBeanDefinitionScanner {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
 
             if (logger.isDebugEnabled()) {
-                logger.debug("[Repost] Creating Forest Client Bean with name '" + holder.getBeanName()
+                logger.debug("[EasyHd] Creating EasyHd Client Bean with name '" + holder.getBeanName()
                         + "' and Proxy of '" + definition.getBeanClassName() + "' client interface");
             }
 
             String beanClassName = definition.getBeanClassName();
 
-            logger.info("[Repost] Created Repost Client Bean with name '" + holder.getBeanName()
+            logger.info("[EasyHd] Created EasyHd Client Bean with name '" + holder.getBeanName()
                     + "' and Proxy of '" + beanClassName + "' client interface");
 
         }
@@ -93,13 +92,21 @@ public class EasyHdClientScanner extends ClassPathBeanDefinitionScanner {
         }
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
         AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
+        // 指定当前bean的class
         beanDefinition.setBeanClass(EasyHdFactoryBean.class);
-        // 使用RepostFactoryBean类的构造器进行实例化
-        beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
-        // 将对象注入到IOC容器当中
+        // 使用EasyHdFactoryBean类的构造器进行实例化
+        assert clazz != null;
+//        beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
+
+        // 也可以用其他方式比如
+        beanDefinition.getPropertyValues().add("interfaceType", clazz); // 推荐使用这种方法
+
+        // 将对象注入到IOC容器当中, 校验对象是否已经被注册 如果已经被注册删掉 让他用我们的代理对象
         if (registry.isBeanNameInUse(beanName)) {
             registry.removeBeanDefinition(beanName);
         }
+
+        // 注入对象
         registry.registerBeanDefinition(beanName, beanDefinition);
     }
 

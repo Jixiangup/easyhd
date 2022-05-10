@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-//@Import({RepostScanRegister.class}) // 开启后不添加RepostScan也会将所有接口添加到IOC容器中
+//@Import({EasyHdScanRegister.class}) // 开启后不添加EasyHdScan也会将所有接口添加到IOC容器中
 public class EasyHdAutoConfiguration {
 
     @Autowired

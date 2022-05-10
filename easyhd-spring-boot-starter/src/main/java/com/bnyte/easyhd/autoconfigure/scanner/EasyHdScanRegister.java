@@ -54,29 +54,35 @@ public class EasyHdScanRegister implements
             AnnotationAttributes attributes =
                     AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(EasyHdScan.class.getName()));
 
-            /**
-             * 获取basePackages属性
+            assert attributes != null;
+            /*
+             * 将配置的basePackages添加到包路径集合中
              */
-            Arrays.stream(attributes.getStringArray("basePackages"))
-                    .filter(StringUtils::hasText)
-                    .peek(basePackage -> EasyHdScanRegister.basePackages.add(basePackage))
-                    .collect(Collectors.toList());
+            basePackages.addAll(
+                Arrays.stream(attributes.getStringArray("basePackages"))
+                        .filter(StringUtils::hasText)
+                        .collect(Collectors.toList())
+            );
 
-            /**
+            /*
              * 获取basePackageClasses属性
              */
-            Arrays.stream(attributes.getClassArray("basePackageClasses"))
-                    .peek(clazz -> EasyHdScanRegister.basePackages.add(ClassUtils.getPackageName(clazz)))
-                    .collect(Collectors.toList());
+            basePackages.addAll(
+                Arrays.stream(attributes.getClassArray("basePackageClasses"))
+                        .map(ClassUtils::getPackageName)
+                        .collect(Collectors.toList())
+            );
 
-            /**
+            /*
              * 获取value属性
              */
-            Arrays.stream(attributes.getStringArray("value"))
-                    .filter(StringUtils::hasText)
-                    .peek(basePackage -> EasyHdScanRegister.basePackages.add(basePackage))
-                    .collect(Collectors.toList());
-            log.info("[Repost] scanner basePackages have < " + EasyHdScanRegister.basePackages.toString() + " >");
+            basePackages.addAll(
+                    Arrays.stream(attributes.getStringArray("value"))
+                            .filter(StringUtils::hasText)
+                            .collect(Collectors.toList())
+            );
+            ;
+            log.info("[EasyHd] scanner basePackages have < " + EasyHdScanRegister.basePackages.toString() + " >");
         }
     }
 

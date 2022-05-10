@@ -1,7 +1,6 @@
 package com.bnyte.easyhd.core.execute;
 
 import com.bnyte.easyhd.core.client.HdfsClient;
-import com.bnyte.easyhd.core.pojo.EasyHdResult;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -11,7 +10,7 @@ import java.io.IOException;
  * @author bnyte
  * @since 2022/5/8 19:56
  */
-public class HdfsExecute {
+public class HdfsActuator {
 
     /**
      * 执行文件下载
@@ -34,18 +33,18 @@ public class HdfsExecute {
      *
      * @param fileSystem 文件系统对象
      */
-    public static void executeMkdir(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
+    public static Boolean executeMkdir(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
         Path path = new Path(hdfsClient.getFolder());
-        boolean mkdirs = fileSystem.mkdirs(path);
-
+        return fileSystem.mkdirs(path);
     }
 
-    public static void executeDelete(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
+    public static Boolean executeDelete(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
         Path path = new Path(hdfsClient.getFolder());
-        fileSystem.delete(path, hdfsClient.getRecursive());
+        return fileSystem.delete(path, hdfsClient.getRecursive());
     }
 
-    public static void executeMove(FileSystem fileSystem, HdfsClient hdfsClient) {
+    public static Boolean executeMove(FileSystem fileSystem, HdfsClient hdfsClient) {
+        return true;
     }
 
     /**
@@ -54,10 +53,11 @@ public class HdfsExecute {
      * @param fileSystem hdfs文件系统对象
      * @throws IOException 上传失败
      */
-    public static void executePut(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
+    public static Boolean executePut(FileSystem fileSystem, HdfsClient hdfsClient) throws IOException {
         Path localPath = new Path(hdfsClient.getLocal());
         Path remotePath = new Path(hdfsClient.getRemote());
         fileSystem.copyFromLocalFile(hdfsClient.getRemove(), hdfsClient.getOverwrite(), localPath, remotePath);
+        return true;
     }
 
 }

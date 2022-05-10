@@ -47,6 +47,17 @@ public class EasyHdResult<T> implements Serializable {
         return response;
     }
 
+    /**
+     * 执行成功无数据
+     * @return 执行成功无数据
+     */
+    public static <T> EasyHdResult<T> ok(T data) {
+        EasyHdResult<T> response = new EasyHdResult<>();
+        response.setState(true);
+        response.setData(data);
+        return response;
+    }
+
     public EasyHdResult() {
     }
 

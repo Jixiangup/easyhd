@@ -7,8 +7,9 @@ import com.bnyte.easyhd.core.bind.FsPut;
 import com.bnyte.easyhd.core.client.HdfsClient;
 import com.bnyte.easyhd.core.exception.ClientNotFoundException;
 import com.bnyte.easyhd.core.exception.OperateMethodException;
-import com.bnyte.easyhd.core.execute.HdfsExecute;
+import com.bnyte.easyhd.core.execute.HdfsActuator;
 import com.bnyte.easyhd.core.handle.EasyHdHandler;
+import com.bnyte.easyhd.core.json.gson.GsonRender;
 import com.bnyte.easyhd.core.pojo.EasyHdResult;
 import com.bnyte.easyhd.core.render.HdfsRender;
 import org.apache.hadoop.fs.FileSystem;
@@ -62,19 +63,15 @@ public class HdfsHandler implements EasyHdHandler {
         try {
             switch (this.getHdfsClient().getMethod()) {
                 case DOWNLOAD:
-                    return HdfsExecute.executeDownload(fileSystem, this.getHdfsClient());
+                    return HdfsActuator.executeDownload(fileSystem, this.getHdfsClient());
                 case MKDIR:
-                    HdfsExecute.executeMkdir(fileSystem, this.getHdfsClient());
-                    break;
+                    return HdfsActuator.executeMkdir(fileSystem, this.getHdfsClient());
                 case PUT:
-                    HdfsExecute.executePut(fileSystem, this.getHdfsClient());
-                    break;
+                    return HdfsActuator.executePut(fileSystem, this.getHdfsClient());
                 case MOVE:
-                    HdfsExecute.executeMove(fileSystem, this.getHdfsClient());
-                    break;
+                    return HdfsActuator.executeMove(fileSystem, this.getHdfsClient());
                 case DELETE:
-                    HdfsExecute.executeDelete(fileSystem, this.getHdfsClient());
-                    break;
+                    return HdfsActuator.executeDelete(fileSystem, this.getHdfsClient());
                 default:throw new OperateMethodException("HDFS 客户端操作方式未找到");
             }
         } catch (IOException e) {
@@ -94,11 +91,33 @@ public class HdfsHandler implements EasyHdHandler {
     @Override
     public Object postResponseProcessing(Object object) {
         if (Objects.isNull(object)) return null;
-        // 默认空值响应
-        if (object instanceof Boolean) {
-            return EasyHdResult.execute((Boolean) object);
+
+        return convertResponseResult(object);
+
+    }
+
+    private Object convertResponseResult(Object object) {
+        Method method = this.getMethod();
+        Class<?> invokeReturnType = method.getReturnType();
+
+        // 构建easyhd响应结果
+        if (invokeReturnType.getTypeName().equals(EasyHdResult.class.getTypeName())) {
+            if (object instanceof Boolean) return EasyHdResult.ok(object);
         }
-        return null;
+
+        // 响应结果和接口响应结果相同，直接返回
+        if (invokeReturnType.getTypeName().equals(object.getClass().getTypeName())) return object;
+
+        // 响应字符串
+        if (invokeReturnType.getTypeName().equals(String.class.getTypeName())) {
+            EasyHdResult<Object> result = EasyHdResult.ok(object);
+            return GsonRender.toString(result);
+        }
+
+        // 指定了方法返回值
+        EasyHdResult<Object> result = EasyHdResult.ok(object);
+        return GsonRender.toJava(GsonRender.toString(result), invokeReturnType);
+
     }
 
     private HdfsClient renderHdfsClient() {

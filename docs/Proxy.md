@@ -243,10 +243,8 @@ public void registerProxy(BeanDefinitionRegistry registry, BeanDefinitionHolder 
     beanDefinition.setBeanClass(EasyHdFactoryBean.class);
     // 使用EasyHdFactoryBean类的构造器进行实例化
     assert clazz != null;
-//        beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
-    
-    // 也可以用其他方式比如
-    beanDefinition.getPropertyValues().add("interfaceType", clazz); // 推荐使用这种方法
+    beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
+   
     
     // 将对象注入到IOC容器当中, 校验对象是否已经被注册 如果已经被注册删掉 让他用我们的代理对象
     if (registry.isBeanNameInUse(beanName)) {

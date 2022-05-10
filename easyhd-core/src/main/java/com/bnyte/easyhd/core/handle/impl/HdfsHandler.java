@@ -100,6 +100,8 @@ public class HdfsHandler implements EasyHdHandler {
         Method method = this.getMethod();
         Class<?> invokeReturnType = method.getReturnType();
 
+        if (invokeReturnType.getTypeName().equals(Void.class.getTypeName())) return null;
+
         // 构建easyhd响应结果
         if (invokeReturnType.getTypeName().equals(EasyHdResult.class.getTypeName())) {
             if (object instanceof Boolean) return EasyHdResult.ok(object);

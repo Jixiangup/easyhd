@@ -75,7 +75,7 @@ public @interface EasyHdScan {
 }
 ```
 
-- Eas
+- EasyHdScanRegister
 ```java
 /**
  * 获取所有的需要扫描的Bean包路径

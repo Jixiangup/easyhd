@@ -57,6 +57,12 @@ public class HdfsController {
 
 ### 名词介绍
 
+- spring.factories
+
+`spring.factories`文件是`SpringBoot`框架给我们的功能特性,包含了非常多的功能,最常用的就是`AutoConfiguration`
+
+### 流程解析
+
 - @EasyHdScan
 
 ```java
@@ -123,12 +129,6 @@ public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, B
     }
 }
 ```
-
-- spring.factories
-
-`spring.factories`文件是`SpringBoot`框架给我们的功能特性,包含了非常多的功能,最常用的就是`AutoConfiguration`
-
-### 流程解析
 
 - spring.factories
 

@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /**
  * @author bnyte
- * @since 2022/5/8 14:34
+ * @since 1.0.0
  */
 public class HdfsClient {
 

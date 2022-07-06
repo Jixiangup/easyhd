@@ -8,7 +8,7 @@ import com.bnyte.easyhd.core.client.HdfsClient;
 import com.bnyte.easyhd.core.exception.ClientNotFoundException;
 import com.bnyte.easyhd.core.exception.OperateMethodException;
 import com.bnyte.easyhd.core.execute.HdfsActuator;
-import com.bnyte.easyhd.core.handle.EasyHdHandler;
+import com.bnyte.easyhd.core.handle.Handler;
 import com.bnyte.easyhd.core.json.gson.GsonRender;
 import com.bnyte.easyhd.core.pojo.EasyHdResult;
 import com.bnyte.easyhd.core.render.HdfsRender;
@@ -26,9 +26,9 @@ import java.util.stream.Stream;
 
 /**
  * @author bnyte
- * @since 2022/5/8 14:33
+ * @since 1.0.0
  */
-public class HdfsHandler implements EasyHdHandler {
+public class HdfsHandler implements Handler {
 
     private static final Logger log = LoggerFactory.getLogger(HdfsHandler.class);
     public static final List<Class<? extends Annotation>> hdfs;
@@ -53,8 +53,9 @@ public class HdfsHandler implements EasyHdHandler {
     }
 
     @Override
-    public void build() {
+    public Handler build() {
         setHdfsClient(renderHdfsClient());
+        return this;
     }
 
     @Override

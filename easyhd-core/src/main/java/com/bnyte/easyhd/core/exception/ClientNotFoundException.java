@@ -2,7 +2,7 @@ package com.bnyte.easyhd.core.exception;
 
 /**
  * @author bnyte
- * @since 2022/5/8 14:57
+ * @since 1.0.0
  */
 public class ClientNotFoundException extends RuntimeException {
     public ClientNotFoundException() {

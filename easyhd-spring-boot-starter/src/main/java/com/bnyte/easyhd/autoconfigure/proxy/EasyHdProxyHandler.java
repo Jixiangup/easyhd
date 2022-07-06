@@ -1,6 +1,7 @@
 package com.bnyte.easyhd.autoconfigure.proxy;
 
-import com.bnyte.easyhd.core.handle.EasyHdHandler;
+import com.bnyte.easyhd.core.factory.HandleLoaderFactory;
+import com.bnyte.easyhd.core.handle.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +10,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author bnyte
- * @version 1.0.0
+ * @since 1.0.0
  */
 public class EasyHdProxyHandler<T> implements InvocationHandler {
 
@@ -34,8 +35,7 @@ public class EasyHdProxyHandler<T> implements InvocationHandler {
         if (Object.class.equals(method.getDeclaringClass())) {
             return method.invoke(this, args);
         } else {
-            EasyHdHandler hdHandler = EasyHdHandler.loader(method, args);
-            hdHandler.build();
+            Handler hdHandler = HandleLoaderFactory.loader(method, args).build();
             Object execute = hdHandler.execute();
             return hdHandler.postResponseProcessing(execute);
         }

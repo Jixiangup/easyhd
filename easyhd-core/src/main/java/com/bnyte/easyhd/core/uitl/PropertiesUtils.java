@@ -12,10 +12,16 @@ import java.util.Properties;
 
 /**
  * @author bnyte
- * @since 2022/5/8 16:05
+ * @since 1.0.0
  */
 public class PropertiesUtils {
 
+    /**
+     * 需要解析的字符模板串参数渲染准备
+     * @param args 参数列表
+     * @param method 被执行的方法
+     * @return 返回准备好的属性对象
+     */
     public static Properties render(List<Object> args, Method method) {
         Properties properties = new Properties();
         Parameter[] parameters = method.getParameters();
@@ -26,10 +32,6 @@ public class PropertiesUtils {
             }
         }
         return properties;
-    }
-
-    public void test(@Var("1") String a, @Var("1") String b) {
-
     }
 
 }

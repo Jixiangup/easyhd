@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 
 /**
  * @author bnyte
- * @since 2022/5/8 15:25
+ * @since 1.0.0
  */
 public class HdfsRender {
 

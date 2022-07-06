@@ -3,10 +3,10 @@ package com.bnyte.easyhd.core.json.gson;
 import com.google.gson.Gson;
 
 /**
- * gson构建器
+ * gson渲染器
  *
  * @author bnyte
- * @since 2022/5/9 20:46
+ * @since 1.0.0
  */
 public class GsonRender {
 

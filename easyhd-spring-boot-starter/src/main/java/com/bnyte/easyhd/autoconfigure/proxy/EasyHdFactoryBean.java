@@ -8,7 +8,7 @@ import java.lang.reflect.Proxy;
 /**
  * @author bnyte
  *  FactoryBean是一种特殊的对象，它是一个工厂Bean，它返回的不是某一个实例，而是一类对象，它最大的作用是能让我们自定义Bean的创建过程，注意与BeanFactory区分，理解FactoryBean更有助于我们理解Spring的编程思想。
- * @version 1.0.0
+ * @since 1.0.0
  */
 public class EasyHdFactoryBean<T> implements FactoryBean<T>{
 

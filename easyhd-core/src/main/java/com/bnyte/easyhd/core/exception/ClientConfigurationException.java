@@ -2,7 +2,7 @@ package com.bnyte.easyhd.core.exception;
 
 /**
  * @author bnyte
- * @since 2022/5/8 15:29
+ * @since 1.0.0
  */
 public class ClientConfigurationException extends RuntimeException {
     public ClientConfigurationException() {

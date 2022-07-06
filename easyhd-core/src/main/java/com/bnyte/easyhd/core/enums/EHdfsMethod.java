@@ -2,7 +2,7 @@ package com.bnyte.easyhd.core.enums;
 
 /**
  * @author bnyte
- * @since 2022/5/8 14:34
+ * @since 1.0.0
  */
 public enum EHdfsMethod {
     PUT,

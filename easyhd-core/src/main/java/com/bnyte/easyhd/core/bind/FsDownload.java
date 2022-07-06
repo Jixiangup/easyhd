@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * @author bnyte
- * @since 2022/5/7 23:03
+ * @since 1.0.0
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
